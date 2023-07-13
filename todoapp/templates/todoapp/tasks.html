@@ -6,9 +6,27 @@
 </head>
 <body>
 <ul>
-    {% for t in tasks_lst %}
-         <li><p>{{t.title}}</p></li>
+    {% for m in menu_lst %}
+         {% if page_type == m.page_type %}
+                            <li>{{m.title}}</li>
+         {% else %}
+                            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+         {% endif %}
     {% endfor %}
 </ul>
+<h1>Невыполненные задачи</h1>
+<ul>
+    {% for t in tasks_lst %}
+         <li>
+             <h2>{{t.title}}</h2>
+             <h4>{{t.project.title}}</h4>
+             <h5>{{t.time_create}}</h5>
+             <p>{{t.content}}</p>
+             <a><p>Редактировать</p></a>
+             <a><p>Выполнить</p></a>
+         </li>
+    {% endfor %}
+</ul>
+<h1>Выполненные задачи</h1>
 </body>
 </html>
