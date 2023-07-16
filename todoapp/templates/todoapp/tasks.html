@@ -15,18 +15,39 @@
     {% endfor %}
 </ul>
 <h1>Невыполненные задачи</h1>
+{% if not uncompleted_tasks %}
+    <h4>Все задачи выполнены!</h4>
+{% endif %}
 <ul>
-    {% for t in tasks_lst %}
+    {% for t in uncompleted_tasks %}
+        {% if t.time_complete == None %}
          <li>
              <h2>{{t.title}}</h2>
              <h4>{{t.project.title}}</h4>
-             <h5>{{t.time_create}}</h5>
+             <h5>Создано: {{t.time_create}}</h5>
              <p>{{t.content}}</p>
              <a><p>Редактировать</p></a>
-             <a><p>Выполнить</p></a>
+             <a href="{% url 'complete' t.pk %}"><p>Выполнить</p></a>
          </li>
+        {% endif %}
     {% endfor %}
 </ul>
 <h1>Выполненные задачи</h1>
+{% if not completed_tasks %}
+    <h4>Здесь будут отображаться задачи, которые вы выполнили.</h4>
+{% endif %}
+<ul>
+{% for t in completed_tasks %}
+    {% if t.time_complete != None %}
+        <li>
+            <h2>{{t.title}}</h2>
+            <h4>{{t.project.title}}</h4>
+            <h5>Выполнено: {{t.time_complete}}</h5>
+            <p>{{t.content}}</p>
+            <a href="{% url 'complete' t.pk %}"><p>Удалить</p></a>
+        </li>
+    {% endif %}
+{% endfor %}
+</ul>
 </body>
 </html>
