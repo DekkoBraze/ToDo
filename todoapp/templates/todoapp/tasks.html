@@ -24,7 +24,7 @@
          <li>
              <h2>{{t.title}}</h2>
              <h4>{{t.project.title}}</h4>
-             <h5>Создано: {{t.time_create}}</h5>
+             <h5>Создано: {{t.time_create|date:'H:i d.m.Y'}}</h5>
              <p>{{t.content}}</p>
              <a><p>Редактировать</p></a>
              <a href="{% url 'complete' t.pk %}"><p>Выполнить</p></a>
@@ -42,7 +42,7 @@
         <li>
             <h2>{{t.title}}</h2>
             <h4>{{t.project.title}}</h4>
-            <h5>Выполнено: {{t.time_complete}}</h5>
+            <h5>Выполнено: {{t.time_complete|date:'H:i d.m.Y'}}</h5>
             <p>{{t.content}}</p>
             <a href="{% url 'complete' t.pk %}"><p>Удалить</p></a>
         </li>

@@ -1,12 +1,11 @@
 import time
 from datetime import datetime
-
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.http import HttpResponse
 from .models import *
 from django.shortcuts import redirect
-
+from django.db.models import F, Func, Value, CharField
 
 menu_lst = [{'title': "Задачи", 'url_name': 'tasks', 'page_type': 1},
         {'title': "Шаблоны", 'url_name': 'templates', 'page_type': 2},
@@ -31,7 +30,10 @@ def complete_task(request, pk):
 def view_tasks(request):
     uncompleted_tasks = Tasks.objects.filter(time_complete=None).order_by('-time_create')
     completed_tasks = Tasks.objects.exclude(time_complete=None).order_by('-time_complete')
-    context = {'title': 'Задачи', 'menu_lst': menu_lst, 'page_type': 1, 'uncompleted_tasks': uncompleted_tasks, 'completed_tasks': completed_tasks}
+
+    context = {'title': 'Задачи', 'menu_lst': menu_lst, 'page_type': 1, 'uncompleted_tasks': uncompleted_tasks,
+               'completed_tasks': completed_tasks}
+
 
     return render(request, 'todoapp/tasks.html', context=context)
 
