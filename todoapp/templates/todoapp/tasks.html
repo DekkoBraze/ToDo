@@ -1,19 +1,15 @@
 <!DOCTYPE html>
+
+{% extends 'todoapp/index.html' %}
+
+{% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{title}}</title>
 </head>
 <body>
-<ul>
-    {% for m in menu_lst %}
-         {% if page_type == m.page_type %}
-                            <li>{{m.title}}</li>
-         {% else %}
-                            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-         {% endif %}
-    {% endfor %}
-</ul>
+<a href="{% url 'add_task' %}"><h3>+ Добавить задачу</h3></a>
 <h1>Невыполненные задачи</h1>
 {% if not uncompleted_tasks %}
     <h4>Все задачи выполнены!</h4>
@@ -26,8 +22,9 @@
              <h4>{{t.project.title}}</h4>
              <h5>Создано: {{t.time_create|date:'H:i d.m.Y'}}</h5>
              <p>{{t.content}}</p>
-             <a><p>Редактировать</p></a>
-             <a href="{% url 'complete' t.pk %}"><p>Выполнить</p></a>
+             <a href="{% url 'change_task' t.pk %}"><p>Редактировать</p></a>
+             <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
+             <a href="{% url 'complete' t.pk %}"><h3>Выполнить</h3></a>
          </li>
         {% endif %}
     {% endfor %}
@@ -44,10 +41,11 @@
             <h4>{{t.project.title}}</h4>
             <h5>Выполнено: {{t.time_complete|date:'H:i d.m.Y'}}</h5>
             <p>{{t.content}}</p>
-            <a href="{% url 'complete' t.pk %}"><p>Удалить</p></a>
+            <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
         </li>
     {% endif %}
 {% endfor %}
 </ul>
 </body>
 </html>
+{% endblock %}

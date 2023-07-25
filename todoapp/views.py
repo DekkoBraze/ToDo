@@ -1,11 +1,14 @@
 import time
 from datetime import datetime
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from .models import *
 from django.shortcuts import redirect
 from django.db.models import F, Func, Value, CharField
+from .forms import *
+from django.urls import reverse_lazy
+from .utils import *
 
 menu_lst = [{'title': "Задачи", 'url_name': 'tasks', 'page_type': 1},
         {'title': "Шаблоны", 'url_name': 'templates', 'page_type': 2},
@@ -34,8 +37,26 @@ def view_tasks(request):
     context = {'title': 'Задачи', 'menu_lst': menu_lst, 'page_type': 1, 'uncompleted_tasks': uncompleted_tasks,
                'completed_tasks': completed_tasks}
 
-
     return render(request, 'todoapp/tasks.html', context=context)
+
+
+class AddTask(TaskFormMixin, CreateView):
+    form_class = TaskForm
+    template_name = 'todoapp/add_task.html'
+    success_url = reverse_lazy('tasks')
+
+
+class ChangeTask(TaskFormMixin, UpdateView):
+    form_class = TaskForm
+    model = Tasks
+    template_name = 'todoapp/change_task.html'
+    success_url = reverse_lazy('tasks')
+
+
+class DeleteTask(TaskFormMixin, DeleteView):
+    model = Tasks
+    template_name = 'todoapp/delete_task.html'
+    success_url = reverse_lazy('tasks')
 
 
 #class ViewTasks(ListView):

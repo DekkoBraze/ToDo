@@ -16,3 +16,6 @@ class Projects(models.Model):
     progress = models.IntegerField()
     time_create = models.DateTimeField(auto_now_add=True)
     time_complete = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title

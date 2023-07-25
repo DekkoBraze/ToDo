@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+{% extends 'todoapp/index.html' %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+<form method="post">{% csrf_token %}
+    <p>Вы уверены, что хотите удалить задачу"?</p>
+    <input type="submit" value="Удалить!">
+</form>
+</body>
+</html>
+{% endblock %}

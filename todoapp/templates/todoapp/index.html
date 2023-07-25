@@ -5,14 +5,19 @@
     <title>{{title}}</title>
 </head>
 <body>
+{% block mainmenu %}
 <ul>
     {% for m in menu_lst %}
-         {% if not forloop.last %}
-                            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
+         {% if page_type == m.page_type %}
+                            <li>{{m.title}}</li>
          {% else %}
-                            <li class="last"><a href="{% url m.url_name %}">{{m.title}}</a></li>
+                            <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
          {% endif %}
     {% endfor %}
 </ul>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
 </body>
 </html>
