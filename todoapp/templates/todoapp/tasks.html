@@ -16,17 +16,15 @@
 {% endif %}
 <ul>
     {% for t in uncompleted_tasks %}
-        {% if t.time_complete == None %}
-         <li>
-             <h2>{{t.title}}</h2>
-             <h4>{{t.project.title}}</h4>
-             <h5>Создано: {{t.time_create|date:'H:i d.m.Y'}}</h5>
-             <p>{{t.content}}</p>
-             <a href="{% url 'change_task' t.pk %}"><p>Редактировать</p></a>
-             <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
-             <a href="{% url 'complete' t.pk %}"><h3>Выполнить</h3></a>
-         </li>
-        {% endif %}
+        <li>
+            <h2>{{t.title}}</h2>
+            <h4>{{t.project.title}}</h4>
+            <h5>Создано: {{t.time_create|date:'H:i d.m.Y'}}</h5>
+            <p>{{t.content}}</p>
+            <a href="{% url 'change_task' t.pk %}"><p>Редактировать</p></a>
+            <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
+            <a href="{% url 'complete_task' t.pk %}"><h3>Выполнить</h3></a>
+        </li>
     {% endfor %}
 </ul>
 <h1>Выполненные задачи</h1>
@@ -34,8 +32,7 @@
     <h4>Здесь будут отображаться задачи, которые вы выполнили.</h4>
 {% endif %}
 <ul>
-{% for t in completed_tasks %}
-    {% if t.time_complete != None %}
+    {% for t in completed_tasks %}
         <li>
             <h2>{{t.title}}</h2>
             <h4>{{t.project.title}}</h4>
@@ -43,8 +40,7 @@
             <p>{{t.content}}</p>
             <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
         </li>
-    {% endif %}
-{% endfor %}
+    {% endfor %}
 </ul>
 </body>
 </html>

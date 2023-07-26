@@ -15,3 +15,17 @@ class TaskForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 50, 'rows': 3}),
         }
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Projects
+        fields = ['title', 'content']
+        labels = {
+            'title': 'Название проекта',
+            'content': 'Описание',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms.Textarea(attrs={'cols': 50, 'rows': 3}),
+        }

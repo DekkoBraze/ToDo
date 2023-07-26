@@ -9,10 +9,9 @@
     <title>{{title}}</title>
 </head>
 <body>
-<form action="{% url 'add_task' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Добавить!</button>
+<form method="post">{% csrf_token %}
+    <p>{{text}}</p>
+    <input type="submit" value="{{action}}">
 </form>
 </body>
 </html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+{% extends 'todoapp/index.html' %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+<a href="{% url 'add_project' %}"><h3>+ Добавить проект</h3></a>
+<h1>Проекты</h1>
+{% if not uncompleted_projects %}
+    <h4>Здесь будут отображаться ваши проекты.</h4>
+{% endif %}
+<ul>
+    {% for p in uncompleted_projects %}
+         <li>
+             <h2>{{p.title}}</h2>
+             <h4>Прогресс: {{p.progress}}</h4>
+             <h5>Создано: {{p.time_create|date:'H:i d.m.Y'}}</h5>
+             <p>{{p.content}}</p>
+             <a href="{% url 'change_project' p.pk %}"><p>Редактировать</p></a>
+             <a href="{% url 'delete_project' p.pk %}"><p>Удалить</p></a>
+             <a href="{% url 'add_project_task' p.pk %}"><h3>Добавить задачу по проекту</h3></a>
+             <a href="{% url 'complete_project' p.pk %}"><h3>Завершить</h3></a>
+         </li>
+    {% endfor %}
+</ul>
+<h1>Завершенные проекты</h1>
+{% if not completed_projects %}
+    <h4>Здесь будут отображаться проекты, которые вы завершили.</h4>
+{% endif %}
+<ul>
+    {% for p in completed_projects %}
+        <li>
+            <h2>{{p.title}}</h2>
+            <h4>Завершено за {{p.progress}} шагов</h4>
+            <h5>Время завершения: {{p.time_complete|date:'H:i d.m.Y'}}</h5>
+            <p>{{p.content}}</p>
+            <a href="{% url 'delete_project' p.pk %}"><p>Удалить</p></a>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
+{% endblock %}
