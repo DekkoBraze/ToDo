@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+{% extends 'todoapp/index.html' %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+<a href="{% url 'add_template' %}"><h3>+ Добавить шаблон</h3></a>
+<h1>Шаблоны</h1>
+{% if not templates %}
+    <h4>Здесь появятся ваши шаблоны!</h4>
+{% endif %}
+<ul>
+    {% for t in templates %}
+        <li>
+            <h2>{{t.title}}</h2>
+            <h4>{{t.project.title}}</h4>
+            <p>{{t.content}}</p>
+            <a href="{% url 'change_template' t.pk %}"><p>Редактировать</p></a>
+            <a href="{% url 'delete_template' t.pk %}"><p>Удалить</p></a>
+            <a href="{% url 'use_template' t.pk %}"><h3>Создать задачу</h3></a>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
+{% endblock %}

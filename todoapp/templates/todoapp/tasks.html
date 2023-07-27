@@ -23,6 +23,7 @@
             <p>{{t.content}}</p>
             <a href="{% url 'change_task' t.pk %}"><p>Редактировать</p></a>
             <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
+            <a href="{% url 'create_template' t.pk %}"><p>Создать шаблон</p></a>
             <a href="{% url 'complete_task' t.pk %}"><h3>Выполнить</h3></a>
         </li>
     {% endfor %}
@@ -38,6 +39,7 @@
             <h4>{{t.project.title}}</h4>
             <h5>Выполнено: {{t.time_complete|date:'H:i d.m.Y'}}</h5>
             <p>{{t.content}}</p>
+            <a href="{% url 'create_template' t.pk %}"><p>Создать шаблон</p></a>
             <a href="{% url 'delete_task' t.pk %}"><p>Удалить</p></a>
         </li>
     {% endfor %}

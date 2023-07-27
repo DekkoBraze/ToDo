@@ -10,6 +10,12 @@ class Tasks(models.Model):
     time_complete = models.DateTimeField(null=True, blank=True)
 
 
+class TaskTemplate(models.Model):
+    title = models.CharField(max_length=50)
+    content = models.TextField(blank=True)
+    project = models.ForeignKey("Projects", on_delete=models.CASCADE, null=True, blank=True)
+
+
 class Projects(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField(blank=True)

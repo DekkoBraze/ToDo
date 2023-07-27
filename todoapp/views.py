@@ -38,7 +38,8 @@ def view_projects(request):
 
 def complete_task(request, pk):
     task = Tasks.objects.get(pk=pk)
-    task.project.add_progress()
+    if (task.project):
+        task.project.add_progress()
     task.time_complete = datetime.now()
     task.save()
 
@@ -51,6 +52,22 @@ def add_project_task(request, pk):
     t.save()
 
     return redirect('tasks')
+
+
+def create_template(request, pk):
+    task = Tasks.objects.get(pk=pk)
+    template = TaskTemplate(title=task.title, content=task.content, project=task.project)
+    template.save()
+
+    return redirect('tasks')
+
+
+def create_task_from_template(request, pk):
+    template = TaskTemplate.objects.get(pk=pk)
+    task = Tasks(title=template.title, content=template.content, project=template.project)
+    task.save()
+
+    return redirect('templates')
 
 
 class AddTask(DataMixin, CreateView):
@@ -86,6 +103,55 @@ class DeleteTask(DataMixin, DeleteView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Удаление задачи", text='Вы уверены, что хотите удалить задачу?', action='Удалить!')
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
+
+
+class TemplateView(DataMixin, ListView):
+    model = TaskTemplate
+    template_name = 'todoapp/templates.html'
+    context_object_name = 'templates'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(page_type=2)
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
+
+
+class AddTemplate(DataMixin, CreateView):
+    form_class = TemplateForm
+    template_name = 'todoapp/add_content.html'
+    success_url = reverse_lazy('templates')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Добавление шаблона")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
+
+
+class ChangeTemplate(DataMixin, UpdateView):
+    form_class = TemplateForm
+    model = TaskTemplate
+    template_name = 'todoapp/change_content.html'
+    success_url = reverse_lazy('templates')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Изменение шаблона")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
+
+
+class DeleteTemplate(DataMixin, DeleteView):
+    model = TaskTemplate
+    template_name = 'todoapp/delete_content.html'
+    success_url = reverse_lazy('templates')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Удаление шаблона", text='Вы уверены, что хотите удалить шаблон?', action='Удалить!')
         context = dict(list(context.items()) + list(c_def.items()))
         return context
 
@@ -151,28 +217,3 @@ class CompleteProject(DataMixin, UpdateView):
                                       action='Завершить!')
         context = dict(list(context.items()) + list(c_def.items()))
         return context
-
-
-#class ViewTasks(ListView):
-#    model = Tasks
-#    template_name = 'todoapp/tasks.html'
-#    context_object_name = 'tasks_lst'
-#
-#    def get_queryset(self):
-#        return Tasks.objects.order_by('-time_complete', '-time_create')
-#
-#    def get_context_data(self, *, object_list=None, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context['title'] = 'Задачи'
-#        context['menu_lst'] = menu_lst
-#        context['page_type'] = 1
-#        return context
-
-def Templates(request):
-    return HttpResponse('Teamplates')
-#class Templates(ListView):
-#    pass
-#
-#
-#class Projects(ListView):
-#    pass

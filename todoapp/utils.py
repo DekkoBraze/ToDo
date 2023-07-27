@@ -10,5 +10,5 @@ class DataMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
         context['menu_lst'] = self.menu_lst
-        context['page_type'] = 0
+        #context['page_type'] = 0
         return context
