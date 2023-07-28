@@ -1,0 +1,37 @@
+body {
+    background: #41B3A3;
+    text-align: left;
+    margin-left: 140px;
+    font-size:20px;
+}
+
+.point {
+    width: 300px;
+    display: table;
+    padding: 5px;
+    background-color: #66c2b5;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.menu {
+    font-size: 20px;
+    text-align: left;
+}
+
+a:link, a:visited {
+   color: DarkBlue;
+   text-decoration: none;
+}
+
+.sidebar {
+height: 100%;
+width: 110px;
+position: absolute;
+left: 0;
+top: 0;
+background-color: #2d7b70;
+padding: 8px;
+font-size: 24px;
+margin-top: 0;
+}

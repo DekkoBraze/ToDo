@@ -26,6 +26,18 @@ def view_tasks(request):
     return render(request, 'todoapp/tasks.html', context=context)
 
 
+class TemplateView(DataMixin, ListView):
+    model = TaskTemplate
+    template_name = 'todoapp/templates.html'
+    context_object_name = 'templates'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(page_type=2, title='Шаблоны')
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
+
+
 def view_projects(request):
     uncompleted_projects = Projects.objects.filter(time_complete=None).order_by('-time_create')
     completed_projects = Projects.objects.exclude(time_complete=None).order_by('-time_complete')
@@ -56,8 +68,13 @@ def add_project_task(request, pk):
 
 def create_template(request, pk):
     task = Tasks.objects.get(pk=pk)
-    template = TaskTemplate(title=task.title, content=task.content, project=task.project)
-    template.save()
+    dublicates = TaskTemplate.objects.filter(title=task.title)
+
+    if dublicates.exists():
+        raise ValueError('Шаблон с таким именем уже существует. Вы точно не ошиблись?')
+    else:
+        template = TaskTemplate(title=task.title, content=task.content, project=task.project)
+        template.save()
 
     return redirect('tasks')
 
@@ -103,18 +120,6 @@ class DeleteTask(DataMixin, DeleteView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Удаление задачи", text='Вы уверены, что хотите удалить задачу?', action='Удалить!')
-        context = dict(list(context.items()) + list(c_def.items()))
-        return context
-
-
-class TemplateView(DataMixin, ListView):
-    model = TaskTemplate
-    template_name = 'todoapp/templates.html'
-    context_object_name = 'templates'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(page_type=2)
         context = dict(list(context.items()) + list(c_def.items()))
         return context
 

@@ -9,14 +9,14 @@
     <title>{{title}}</title>
 </head>
 <body>
-<a href="{% url 'add_task' %}"><h3>+ Добавить задачу</h3></a>
+<a href="{% url 'add_task' %}"><h3 class="content">+ Добавить задачу</h3></a>
 <h1>Невыполненные задачи</h1>
 {% if not uncompleted_tasks %}
     <h4>Все задачи выполнены!</h4>
 {% endif %}
 <ul>
     {% for t in uncompleted_tasks %}
-        <li>
+        <li class="point">
             <h2>{{t.title}}</h2>
             <h4>{{t.project.title}}</h4>
             <h5>Создано: {{t.time_create|date:'H:i d.m.Y'}}</h5>
@@ -34,7 +34,7 @@
 {% endif %}
 <ul>
     {% for t in completed_tasks %}
-        <li>
+        <li class="point">
             <h2>{{t.title}}</h2>
             <h4>{{t.project.title}}</h4>
             <h5>Выполнено: {{t.time_complete|date:'H:i d.m.Y'}}</h5>

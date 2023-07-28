@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+
+{% load static %}
+
+<link type="text/css" href="{% static 'todoapp/style.css' %}" rel="stylesheet" />
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +11,8 @@
 </head>
 <body>
 {% block mainmenu %}
-<ul>
+
+<ul class="sidebar">
     {% for m in menu_lst %}
          {% if page_type == m.page_type %}
                             <li>{{m.title}}</li>
@@ -16,8 +22,9 @@
     {% endfor %}
 </ul>
 {% endblock %}
-
+<div id="content">
 {% block content %}
 {% endblock %}
+</div>
 </body>
 </html>

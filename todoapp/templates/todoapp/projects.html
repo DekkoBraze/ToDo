@@ -16,7 +16,7 @@
 {% endif %}
 <ul>
     {% for p in uncompleted_projects %}
-         <li>
+         <li class="point">
              <h2>{{p.title}}</h2>
              <h4>Прогресс: {{p.progress}}</h4>
              <h5>Создано: {{p.time_create|date:'H:i d.m.Y'}}</h5>
@@ -34,7 +34,7 @@
 {% endif %}
 <ul>
     {% for p in completed_projects %}
-        <li>
+        <li class="point">
             <h2>{{p.title}}</h2>
             <h4>Завершено за {{p.progress}} шагов</h4>
             <h5>Время завершения: {{p.time_complete|date:'H:i d.m.Y'}}</h5>
