@@ -2,6 +2,8 @@ import time
 from datetime import datetime
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth import logout, login
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from .models import *
 from django.shortcuts import redirect
@@ -16,9 +18,43 @@ def index(request):
     return render(request, 'todoapp/index.html', context=context)
 
 
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'todoapp/add_content.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Регистрация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('menu')
+
+
+class LoginUser(DataMixin, LoginView):
+    form_class = LoginUserForm
+    template_name = 'todoapp/add_content.html'
+
+    def get_success_url(self):
+        return reverse_lazy('menu')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Авторизация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('menu')
+
+
 def view_tasks(request):
-    uncompleted_tasks = Tasks.objects.filter(time_complete=None).order_by('-time_create')
-    completed_tasks = Tasks.objects.exclude(time_complete=None).order_by('-time_complete')
+    uncompleted_tasks = Tasks.objects.filter(time_complete=None, user=request.user.username).order_by('-time_create')
+    completed_tasks = Tasks.objects.exclude(time_complete=None).filter(user=request.user.username).order_by('-time_complete')
 
     context = {'title': 'Задачи', 'menu_lst': DataMixin.menu_lst, 'page_type': 1, 'uncompleted_tasks': uncompleted_tasks,
                'completed_tasks': completed_tasks}
@@ -26,21 +62,17 @@ def view_tasks(request):
     return render(request, 'todoapp/tasks.html', context=context)
 
 
-class TemplateView(DataMixin, ListView):
-    model = TaskTemplate
-    template_name = 'todoapp/templates.html'
-    context_object_name = 'templates'
+def view_templates(request):
+    templates = TaskTemplate.objects.filter(user=request.user.username)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(page_type=2, title='Шаблоны')
-        context = dict(list(context.items()) + list(c_def.items()))
-        return context
+    context = {'title': 'Шаблоны', 'menu_lst': DataMixin.menu_lst, 'page_type': 2, 'templates': templates}
+
+    return render(request, 'todoapp/templates.html', context=context)
 
 
 def view_projects(request):
-    uncompleted_projects = Projects.objects.filter(time_complete=None).order_by('-time_create')
-    completed_projects = Projects.objects.exclude(time_complete=None).order_by('-time_complete')
+    uncompleted_projects = Projects.objects.filter(time_complete=None, user=request.user.username).order_by('-time_create')
+    completed_projects = Projects.objects.exclude(time_complete=None).filter(user=request.user.username).order_by('-time_complete')
 
     context = {'title': 'Проекты', 'menu_lst': DataMixin.menu_lst, 'page_type': 3, 'uncompleted_projects': uncompleted_projects,
                'completed_projects': completed_projects}
@@ -60,7 +92,7 @@ def complete_task(request, pk):
 
 def add_project_task(request, pk):
     project = Projects.objects.get(pk=pk)
-    t = Tasks(title='Задача по проекту', project=project)
+    t = Tasks(title='Задача по проекту', project=project, user=request.user.username)
     t.save()
 
     return redirect('tasks')
@@ -68,12 +100,12 @@ def add_project_task(request, pk):
 
 def create_template(request, pk):
     task = Tasks.objects.get(pk=pk)
-    dublicates = TaskTemplate.objects.filter(title=task.title)
+    dublicates = TaskTemplate.objects.filter(title=task.title, user=request.user.username)
 
     if dublicates.exists():
         raise ValueError('Шаблон с таким именем уже существует. Вы точно не ошиблись?')
     else:
-        template = TaskTemplate(title=task.title, content=task.content, project=task.project)
+        template = TaskTemplate(title=task.title, content=task.content, project=task.project, user=request.user.username)
         template.save()
 
     return redirect('tasks')
@@ -81,7 +113,7 @@ def create_template(request, pk):
 
 def create_task_from_template(request, pk):
     template = TaskTemplate.objects.get(pk=pk)
-    task = Tasks(title=template.title, content=template.content, project=template.project)
+    task = Tasks(title=template.title, content=template.content, project=template.project, user=request.user.username)
     task.save()
 
     return redirect('templates')
@@ -97,6 +129,12 @@ class AddTask(DataMixin, CreateView):
         c_def = self.get_user_context(title="Добавление задачи")
         context = dict(list(context.items()) + list(c_def.items()))
         return context
+
+    def form_valid(self, form):
+        task = form.instance
+        task.user = self.request.user
+
+        return super().form_valid(form)
 
 
 class ChangeTask(DataMixin, UpdateView):
@@ -135,6 +173,12 @@ class AddTemplate(DataMixin, CreateView):
         context = dict(list(context.items()) + list(c_def.items()))
         return context
 
+    def form_valid(self, form):
+        template = form.instance
+        template.user = self.request.user
+
+        return super().form_valid(form)
+
 
 class ChangeTemplate(DataMixin, UpdateView):
     form_class = TemplateForm
@@ -171,6 +215,12 @@ class AddProject(DataMixin, CreateView):
         c_def = self.get_user_context(title="Добавление проекта")
         context = dict(list(context.items()) + list(c_def.items()))
         return context
+
+    def form_valid(self, form):
+        project = form.instance
+        project.user = self.request.user
+
+        return super().form_valid(form)
 
 
 class ChangeProject(DataMixin, UpdateView):

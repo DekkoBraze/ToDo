@@ -20,10 +20,27 @@
                             <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
          {% endif %}
     {% endfor %}
+    {% if request.user.is_authenticated %}
+        <li>
+            <br> {{user.username}} <br> <a href="{% url 'logout' %}">Выйти</a>
+        </li>
+    {% else %}
+    <li>
+       <br> <a href="{% url 'register' %}">Регистрация</a> <br> <a href="{% url 'login' %}">Войти</a>
+    </li>
+    {% endif %}
 </ul>
 {% endblock %}
 <div id="content">
 {% block content %}
+    {% if request.user.is_authenticated %}
+        <h1>Добро пожаловать, {{user.username}}!</h1>
+        <h3>Чем займемся сегодня?</h3>
+    {% else %}
+        <h1>Добро пожаловать!</h1>
+        <h3>Этот сайт поможет вам распланировать ваш день.</h3>
+        <h3>Вы можете пользоваться им без входа в аккаунт, но если вы желаете конфиденциальности - зарегистрируйтесь.</h3>
+    {% endif %}
 {% endblock %}
 </div>
 </body>

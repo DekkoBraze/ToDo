@@ -4,7 +4,7 @@ from .views import *
 urlpatterns = [
     path('', index, name="menu"),
     path('tasks/', view_tasks, name='tasks'),
-    path('templates/', TemplateView.as_view(), name='templates'),
+    path('templates/', view_templates, name='templates'),
     path('projects/', view_projects, name='projects'),
     path('<int:pk>/complete_task/', complete_task, name='complete_task'),
     path('add_task/', AddTask.as_view(), name='add_task'),
@@ -19,5 +19,8 @@ urlpatterns = [
     path('<int:pk>/use_template/', create_task_from_template, name='use_template'),
     path('add_template/', AddTemplate.as_view(), name='add_template'),
     path('<int:pk>/change_template/', ChangeTemplate.as_view(), name='change_template'),
-    path('<int:pk>/delete_template/', DeleteTemplate.as_view(), name='delete_template')
+    path('<int:pk>/delete_template/', DeleteTemplate.as_view(), name='delete_template'),
+    path('register/', RegisterUser.as_view(), name='register'),
+    path('login/', LoginUser.as_view(), name='login'),
+    path('logout/', logout_user, name='logout')
 ]
