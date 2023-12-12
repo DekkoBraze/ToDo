@@ -5,6 +5,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 
 class TaskForm(forms.ModelForm):
+    def __init__(self, user=None, **kwargs):
+        self.username = kwargs.pop('username')
+        super(TaskForm, self).__init__(**kwargs)
+        self.fields['project'].queryset = Projects.objects.filter(time_complete=None, user=self.username)
+
     class Meta:
         model = Tasks
         fields = ['title', 'content', 'project']
@@ -18,12 +23,13 @@ class TaskForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'cols': 50, 'rows': 3}),
         }
 
-    def __init__(self, user=None, **kwargs):
-        super(TaskForm, self).__init__(**kwargs)
-        self.fields['project'].queryset = Projects.objects.filter(time_complete=None)
-
 
 class TemplateForm(forms.ModelForm):
+    def __init__(self, user=None, **kwargs):
+        self.username = kwargs.pop('username')
+        super(TemplateForm, self).__init__(**kwargs)
+        self.fields['project'].queryset = Projects.objects.filter(time_complete=None, user=self.username)
+
     class Meta:
         model = TaskTemplate
         fields = ['title', 'content', 'project']
@@ -43,6 +49,8 @@ class TemplateForm(forms.ModelForm):
 
         if dublicates.exists():
             raise ValueError('Шаблон с таким именем уже существует. Вы точно не ошиблись?')
+        else:
+            return self.cleaned_data['title']
 
 
 class ProjectForm(forms.ModelForm):

@@ -124,6 +124,11 @@ class AddTask(DataMixin, CreateView):
     template_name = 'todoapp/add_content.html'
     success_url = reverse_lazy('tasks')
 
+    def get_form_kwargs(self):
+        kwargs = super(AddTask, self).get_form_kwargs()
+        kwargs['username'] = self.request.user.username
+        return kwargs
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Добавление задачи")
@@ -132,7 +137,7 @@ class AddTask(DataMixin, CreateView):
 
     def form_valid(self, form):
         task = form.instance
-        task.user = self.request.user
+        task.user = self.request.user.username
 
         return super().form_valid(form)
 
@@ -167,6 +172,11 @@ class AddTemplate(DataMixin, CreateView):
     template_name = 'todoapp/add_content.html'
     success_url = reverse_lazy('templates')
 
+    def get_form_kwargs(self):
+        kwargs = super(AddTemplate, self).get_form_kwargs()
+        kwargs['username'] = self.request.user.username
+        return kwargs
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Добавление шаблона")
@@ -175,7 +185,7 @@ class AddTemplate(DataMixin, CreateView):
 
     def form_valid(self, form):
         template = form.instance
-        template.user = self.request.user
+        template.user = self.request.user.username
 
         return super().form_valid(form)
 
@@ -218,7 +228,7 @@ class AddProject(DataMixin, CreateView):
 
     def form_valid(self, form):
         project = form.instance
-        project.user = self.request.user
+        project.user = self.request.user.username
 
         return super().form_valid(form)
 
